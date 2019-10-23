@@ -10,11 +10,8 @@ let types = ../dhall/cpkg-types.dhall
 let prelude = ../dhall/cpkg-prelude.dhall
 
 let gpgPackage =
-        λ ( x
-          : { name : Text, version : List Natural }
-          )
-      →   prelude.simplePackage
-            x
+        λ(x : { name : Text, version : List Natural })
+      →   prelude.simplePackage x
         ⫽ { pkgUrl =
               "https://gnupg.org/ftp/gcrypt/${x.name}/${x.name}-${prelude.showVersion
                                                                     x.version}.tar.bz2"
@@ -112,11 +109,8 @@ let bison =
           }
 
 let cmake =
-        λ ( cfg
-          : { version : List Natural, patch : Natural }
-          )
-      → let patchString =
-              Natural/show cfg.patch
+        λ(cfg : { version : List Natural, patch : Natural })
+      → let patchString = Natural/show cfg.patch
         
         let versionString = prelude.showVersion cfg.version
         
@@ -129,17 +123,14 @@ let cmake =
                   cfg
         
         in    prelude.defaultPackage
-            ⫽ { pkgName =
-                  "cmake"
+            ⫽ { pkgName = "cmake"
               , pkgVersion = prelude.fullVersion cfg
               , pkgUrl =
                   "https://cmake.org/files/v${versionString}/cmake-${versionString}.${patchString}.tar.gz"
               , pkgSubdir = "cmake-${versionString}.${patchString}"
               , configureCommand = cmakeConfigure
               , installCommand =
-                    λ ( cfg
-                      : types.BuildVars
-                      )
+                    λ(cfg : types.BuildVars)
                   → let wrapper =
                           "CMAKE_ROOT=${cfg.installDir}/share/cmake-${versionString}/ ${cfg.installDir}/bin/cmake \$@"
                     
@@ -166,11 +157,8 @@ let curl =
           }
 
 let dbus =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "dbus", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "dbus", version = v }
         ⫽ { pkgUrl =
               "https://dbus.freedesktop.org/releases/dbus/dbus-${prelude.showVersion
                                                                    v}.tar.xz"
@@ -181,14 +169,10 @@ let dbus =
           }
 
 let fltk =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "fltk", version = v }
+        in    prelude.simplePackage { name = "fltk", version = v }
             ⫽ { pkgUrl =
                   "http://fltk.org/pub/fltk/${versionString}/fltk-${versionString}-source.tar.bz2"
               , pkgSubdir = "fltk-${versionString}"
@@ -213,38 +197,27 @@ let gawk =
           }
 
 let gc =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "gc", version = v }
+        in    prelude.simplePackage { name = "gc", version = v }
             ⫽ { pkgUrl =
                   "https://github.com/ivmai/bdwgc/releases/download/v${versionString}/gc-${versionString}.tar.gz"
               , pkgDeps = [ prelude.unbounded "libatomic_ops" ]
               }
 
 let libatomic_ops =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "libatomic_ops", version = v }
+        in    prelude.simplePackage { name = "libatomic_ops", version = v }
             ⫽ { pkgUrl =
                   "https://github.com/ivmai/libatomic_ops/releases/download/v${versionString}/libatomic_ops-${versionString}.tar.gz"
               }
 
 let git =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "git", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "git", version = v }
         ⫽ { pkgUrl =
               "https://mirrors.edge.kernel.org/pub/software/scm/git/git-${prelude.showVersion
                                                                             v}.tar.xz"
@@ -254,8 +227,7 @@ let git =
           }
 
 let glibc =
-      let buildDir =
-            Some "build"
+      let buildDir = Some "build"
       
       let glibcConfigure =
               λ(cfg : types.BuildVars)
@@ -298,12 +270,9 @@ let glibc =
                   }
               ]
       
-      in    λ ( v
-              : List Natural
-              )
+      in    λ(v : List Natural)
           →   prelude.defaultPackage
-            ⫽ { pkgName =
-                  "glibc"
+            ⫽ { pkgName = "glibc"
               , pkgVersion = v
               , pkgUrl =
                   "http://mirror.keystealth.org/gnu/libc/glibc-${prelude.showVersion
@@ -333,11 +302,8 @@ let harfbuzz =
       let symlinkHarfbuzz =
             λ(h : Text) → prelude.symlink "include/harfbuzz/${h}" "include/${h}"
       
-      in    λ ( v
-              : List Natural
-              )
-          →   prelude.simplePackage
-                { name = "harfbuzz", version = v }
+      in    λ(v : List Natural)
+          →   prelude.simplePackage { name = "harfbuzz", version = v }
             ⫽ { pkgUrl =
                   "https://www.freedesktop.org/software/harfbuzz/release/harfbuzz-${prelude.showVersion
                                                                                       v}.tar.xz"
@@ -382,12 +348,9 @@ let harfbuzz =
               }
 
 let libjpeg-turbo =
-        λ ( v
-          : List Natural
-          )
+        λ(v : List Natural)
       →   prelude.cmakePackage
-        ⫽ { pkgName =
-              "libjpeg-turbo"
+        ⫽ { pkgName = "libjpeg-turbo"
           , pkgVersion = v
           , pkgUrl =
               "https://ayera.dl.sourceforge.net/project/libjpeg-turbo/${prelude.showVersion
@@ -420,11 +383,8 @@ let libuv =
           }
 
 let nasm =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "nasm", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "nasm", version = v }
         ⫽ { pkgUrl =
               "http://www.nasm.us/pub/nasm/releasebuilds/${prelude.showVersion
                                                              v}.02/nasm-${prelude.showVersion
@@ -496,9 +456,7 @@ let perl5 =
                   )
               ]
       
-      in    λ ( v
-              : List Natural
-              )
+      in    λ(v : List Natural)
           → let major =
                   Optional/fold
                     Natural
@@ -507,16 +465,13 @@ let perl5 =
                     Natural/show
                     ""
             
-            in    prelude.simplePackage
-                    { name = "perl", version = v }
+            in    prelude.simplePackage { name = "perl", version = v }
                 ⫽ { pkgUrl =
                       "https://www.cpan.org/src/${major}.0/perl-${prelude.showVersion
                                                                     v}.tar.gz"
                   , configureCommand = perlConfigure
                   , installCommand =
-                        λ ( cfg
-                          : types.BuildVars
-                          )
+                        λ(cfg : types.BuildVars)
                       → let libperlFile =
                               if cfg.static then "libperl.a" else "libperl.so"
                         
@@ -533,11 +488,8 @@ let perl5 =
                   }
 
 let libpng =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "libpng", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "libpng", version = v }
         ⫽ { pkgUrl =
               "https://download.sourceforge.net/libpng/libpng-${prelude.showVersion
                                                                   v}.tar.xz"
@@ -559,11 +511,8 @@ let unistring =
       → prelude.makeGnuLibrary { name = "unistring", version = v }
 
 let valgrind =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "valgrind", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "valgrind", version = v }
         ⫽ { pkgUrl =
               "https://sourceware.org/pub/valgrind/valgrind-${prelude.showVersion
                                                                 v}.tar.bz2"
@@ -573,12 +522,9 @@ let valgrind =
           }
 
 let vim =
-        λ ( v
-          : List Natural
-          )
+        λ(v : List Natural)
       →   prelude.defaultPackage
-        ⫽ { pkgName =
-              "vim"
+        ⫽ { pkgName = "vim"
           , pkgVersion = v
           , pkgUrl =
               "http://ftp.vim.org/vim/unix/vim-${prelude.showVersion v}.tar.bz2"
@@ -590,9 +536,7 @@ let vim =
                 , extraFlags = [ "--enable-gui=no", "--enable-pythoninterp" ]
                 }
           , installCommand =
-                λ ( cfg
-                  : types.BuildVars
-                  )
+                λ(cfg : types.BuildVars)
               → let mkLibDynload =
                         λ(libs : List Text)
                       → concatMapSep
@@ -643,28 +587,20 @@ let xz =
           }
 
 let zlib =
-        λ ( v
-          : List Natural
-          )
+        λ(v : List Natural)
       → let zlibConfigure =
-                λ ( cfg
-                  : types.BuildVars
-                  )
-              → let host =
-                      prelude.mkCCVar cfg
+                λ(cfg : types.BuildVars)
+              → let host = prelude.mkCCVar cfg
                 
-                in  [ prelude.mkExe
-                        "configure"
+                in  [ prelude.mkExe "configure"
                     , prelude.call
                         (   prelude.defaultCall
-                          ⫽ { program =
-                                "./configure"
+                          ⫽ { program = "./configure"
                             , arguments = [ "--prefix=${cfg.installDir}" ]
                             , environment =
                                 Some
                                   (   host
-                                    # [ { var =
-                                            "PATH"
+                                    # [ { var = "PATH"
                                         , value =
                                             "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
                                         }
@@ -707,11 +643,8 @@ let wget =
           }
 
 let gnutls =
-        λ ( cfg
-          : { version : List Natural, patch : Natural }
-          )
-      → let versionString =
-              prelude.showVersion cfg.version
+        λ(cfg : { version : List Natural, patch : Natural })
+      → let versionString = prelude.showVersion cfg.version
         
         in    prelude.simplePackage
                 { name = "gnutls", version = prelude.fullVersion cfg }
@@ -748,11 +681,8 @@ let cairo =
       let symlinkCairo =
             λ(h : Text) → prelude.symlink "include/cairo/${h}" "include/${h}"
       
-      in    λ ( v
-              : List Natural
-              )
-          →   prelude.simplePackage
-                { name = "cairo", version = v }
+      in    λ(v : List Natural)
+          →   prelude.simplePackage { name = "cairo", version = v }
             ⫽ { pkgUrl =
                   "https://www.cairographics.org/releases/cairo-${prelude.showVersion
                                                                     v}.tar.xz"
@@ -785,14 +715,10 @@ let cairo =
               }
 
 let pycairo =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.python2Package
-                { name = "pycairo", version = v }
+        in    prelude.python2Package { name = "pycairo", version = v }
             ⫽ { pkgUrl =
                   "https://github.com/pygobject/pycairo/releases/download/v${versionString}/pycairo-${versionString}.tar.gz"
               , pkgDeps = [ prelude.unbounded "cairo" ]
@@ -892,11 +818,8 @@ let libssh2 =
           }
 
 let giflib =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "giflib", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "giflib", version = v }
         ⫽ { pkgUrl =
               "https://downloads.sourceforge.net/giflib/giflib-${prelude.showVersion
                                                                    v}.tar.bz2"
@@ -974,9 +897,7 @@ let autoconf =
           }
 
 let python =
-        λ ( v
-          : List Natural
-          )
+        λ(v : List Natural)
       → let major =
               Optional/fold Natural (List/head Natural v) Text Natural/show ""
         
@@ -990,8 +911,7 @@ let python =
                     # [ { var = "CONFIG_SITE", value = "config.site" } ]
                   )
         
-        in    prelude.simplePackage
-                { name = "python${major}", version = v }
+        in    prelude.simplePackage { name = "python${major}", version = v }
             ⫽ { pkgUrl =
                   "https://www.python.org/ftp/python/${versionString}/Python-${versionString}.tar.xz"
               , pkgSubdir = "Python-${versionString}"
@@ -1120,11 +1040,8 @@ let libtasn1 =
           }
 
 let p11kit =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "p11-kit", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "p11-kit", version = v }
         ⫽ { pkgUrl =
               "https://github.com/p11-glue/p11-kit/releases/download/${prelude.showVersion
                                                                          v}/p11-kit-${prelude.showVersion
@@ -1161,11 +1078,8 @@ let libtool =
           }
 
 let pkg-config =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "pkg-config", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "pkg-config", version = v }
         ⫽ { pkgUrl =
               "https://pkg-config.freedesktop.org/releases/pkg-config-${prelude.showVersion
                                                                           v}.tar.gz"
@@ -1192,11 +1106,8 @@ let readline =
           }
 
 let pixman =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "pixman", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "pixman", version = v }
         ⫽ { pkgUrl =
               "https://www.cairographics.org/releases/pixman-${prelude.showVersion
                                                                  v}.tar.gz"
@@ -1204,14 +1115,10 @@ let pixman =
           }
 
 let freetype-shared =
-        λ ( x
-          : { name : Text, version : List Natural }
-          )
-      → let versionString =
-              prelude.showVersion x.version
+        λ(x : { name : Text, version : List Natural })
+      → let versionString = prelude.showVersion x.version
         
-        in    prelude.simplePackage
-                x
+        in    prelude.simplePackage x
             ⫽ { pkgUrl =
                   "https://download.savannah.gnu.org/releases/freetype/freetype-${versionString}.tar.gz"
               , configureCommand =
@@ -1263,17 +1170,13 @@ let sdl2 =
               }
 
 let imageMagick =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
         let major =
               Optional/fold Natural (List/head Natural v) Text Natural/show ""
         
-        in    prelude.simplePackage
-                { name = "imagemagick", version = v }
+        in    prelude.simplePackage { name = "imagemagick", version = v }
             ⫽ { pkgUrl =
                   "https://imagemagick.org/download/ImageMagick-${versionString}-67.tar.xz"
               , pkgSubdir = "ImageMagick-${versionString}-67"
@@ -1322,11 +1225,8 @@ let gtk2 =
                   )
               ]
       
-      in    λ ( x
-              : { version : List Natural, patch : Natural }
-              )
-          → let versionString =
-                  prelude.showVersion x.version
+      in    λ(x : { version : List Natural, patch : Natural })
+          → let versionString = prelude.showVersion x.version
             
             let fullVersion = versionString ++ "." ++ Natural/show x.patch
             
@@ -1359,12 +1259,9 @@ let gtk2 =
                   }
 
 let mkXProto =
-        λ ( name
-          : Text
-          )
+        λ(name : Text)
       → λ(v : List Natural)
-      →   prelude.simplePackage
-            { name = name, version = v }
+      →   prelude.simplePackage { name = name, version = v }
         ⫽ { pkgUrl =
               "https://www.x.org/releases/individual/proto/${name}-${prelude.showVersion
                                                                        v}.tar.bz2"
@@ -1398,11 +1295,8 @@ let glproto = mkXProto "glproto"
 let dri2proto = mkXProto "dri2proto"
 
 let pango =
-        λ ( x
-          : { version : List Natural, patch : Natural }
-          )
-      → let versionString =
-              prelude.showVersion x.version
+        λ(x : { version : List Natural, patch : Natural })
+      → let versionString = prelude.showVersion x.version
         
         let fullVersion = versionString ++ "." ++ Natural/show x.patch
         
@@ -1480,11 +1374,8 @@ let libxml2 =
           }
 
 let shared-mime-info =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "shared-mime-info", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "shared-mime-info", version = v }
         ⫽ { pkgUrl =
               "http://freedesktop.org/~hadess/shared-mime-info-${prelude.showVersion
                                                                    v}.tar.xz"
@@ -1507,14 +1398,10 @@ let shared-mime-info =
           }
 
 let intltool =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "intltool", version = v }
+        in    prelude.simplePackage { name = "intltool", version = v }
             ⫽ { pkgUrl =
                   "https://launchpad.net/intltool/trunk/${versionString}/+download/intltool-${versionString}.tar.gz"
               , configureCommand =
@@ -1544,32 +1431,23 @@ let intltool =
               }
 
 let gdk-pixbuf =
-        λ ( x
-          : { version : List Natural, patch : Natural }
-          )
-      → let versionString =
-              prelude.showVersion x.version
+        λ(x : { version : List Natural, patch : Natural })
+      → let versionString = prelude.showVersion x.version
         
         let fullVersion = versionString ++ "." ++ Natural/show x.patch
         
         let gdkInstall =
-                λ ( fs
-                  : List { src : Text, dest : Text }
-                  )
+                λ(fs : List { src : Text, dest : Text })
               → λ(cfg : types.BuildVars)
               →   [ prelude.call
                       (   prelude.defaultCall
-                        ⫽ { program =
-                              "ninja"
+                        ⫽ { program = "ninja"
                           , environment =
                               Some
-                                [ prelude.mkPkgConfigVar
-                                    cfg.linkDirs
-                                , { var =
-                                      "PATH"
+                                [ prelude.mkPkgConfigVar cfg.linkDirs
+                                , { var = "PATH"
                                   , value =
-                                          prelude.mkPathVar
-                                            cfg.binDirs
+                                          prelude.mkPathVar cfg.binDirs
                                       ++  ":${cfg.currentDir}/gdk-pixbuf-${fullVersion}/build/gdk-pixbuf:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
                                   }
                                 , prelude.mkPy3Path cfg.linkDirs
@@ -1607,11 +1485,8 @@ let gdk-pixbuf =
               }
 
 let xmlParser =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "XML-Parser", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "XML-Parser", version = v }
         ⫽ { pkgUrl =
               "https://cpan.metacpan.org/authors/id/T/TO/TODDR/XML-Parser-${prelude.showVersion
                                                                               v}.tar.gz"
@@ -1653,11 +1528,8 @@ let ninja =
               , prelude.symlinkBinary "bin/ninja"
               ]
       
-      in    λ ( v
-              : List Natural
-              )
-          →   prelude.simplePackage
-                { name = "ninja", version = v }
+      in    λ(v : List Natural)
+          →   prelude.simplePackage { name = "ninja", version = v }
             ⫽ { pkgUrl =
                   "https://github.com/ninja-build/ninja/archive/v${prelude.showVersion
                                                                      v}.tar.gz"
@@ -1668,11 +1540,8 @@ let ninja =
               }
 
 let fontconfig =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "fontconfig", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "fontconfig", version = v }
         ⫽ { pkgUrl =
               "https://www.freedesktop.org/software/fontconfig/release/fontconfig-${prelude.showVersion
                                                                                       v}.tar.bz2"
@@ -1685,16 +1554,12 @@ let fontconfig =
           }
 
 let util-linux =
-        λ ( x
-          : { version : List Natural }
-          )
-      → let versionString =
-              prelude.showVersion x.version
+        λ(x : { version : List Natural })
+      → let versionString = prelude.showVersion x.version
         
         let fullVersion = versionString
         
-        in    prelude.simplePackage
-                { name = "util-linux", version = x.version }
+        in    prelude.simplePackage { name = "util-linux", version = x.version }
             ⫽ { pkgUrl =
                   "https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v${versionString}/util-linux-${fullVersion}.tar.xz"
               , configureCommand =
@@ -1718,11 +1583,8 @@ let util-linux =
               }
 
 let fribidi =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "fribidi", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "fribidi", version = v }
         ⫽ { pkgUrl =
               "https://github.com/fribidi/fribidi/releases/download/v${prelude.showVersion
                                                                          v}/fribidi-${prelude.showVersion
@@ -1730,11 +1592,8 @@ let fribidi =
           }
 
 let gobject-introspection =
-        λ ( x
-          : { version : List Natural, patch : Natural }
-          )
-      → let versionString =
-              prelude.showVersion x.version
+        λ(x : { version : List Natural, patch : Natural })
+      → let versionString = prelude.showVersion x.version
         
         let fullVersion = versionString ++ "." ++ Natural/show x.patch
         
@@ -1765,11 +1624,8 @@ let gobject-introspection =
               }
 
 let flex =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
         let flexEnv =
                 λ(_ : List Text)
@@ -1779,8 +1635,7 @@ let flex =
                     # [ { var = "YFLAGS", value = "-Wno-error=yacc" } ]
                   )
         
-        in    prelude.simplePackage
-                { name = "flex", version = v }
+        in    prelude.simplePackage { name = "flex", version = v }
             ⫽ { pkgUrl =
                   "https://github.com/westes/flex/releases/download/v${versionString}/flex-${versionString}.tar.gz"
               , pkgBuildDeps =
@@ -1790,11 +1645,8 @@ let flex =
               }
 
 let glib =
-        λ ( x
-          : { version : List Natural, patch : Natural }
-          )
-      → let versionString =
-              prelude.showVersion x.version
+        λ(x : { version : List Natural, patch : Natural })
+      → let versionString = prelude.showVersion x.version
         
         let fullVersion = versionString ++ "." ++ Natural/show x.patch
         
@@ -2063,11 +1915,8 @@ let glib =
               }
 
 let atk =
-        λ ( x
-          : { version : List Natural, patch : Natural }
-          )
-      → let versionString =
-              prelude.showVersion x.version
+        λ(x : { version : List Natural, patch : Natural })
+      → let versionString = prelude.showVersion x.version
         
         let fullVersion = versionString ++ "." ++ Natural/show x.patch
         
@@ -2089,24 +1938,17 @@ let atk =
               }
 
 let re2c =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "re2c", version = v }
+        in    prelude.simplePackage { name = "re2c", version = v }
             ⫽ { pkgUrl =
                   "https://github.com/skvadrik/re2c/releases/download/${versionString}/re2c-${versionString}.tar.gz"
               }
 
 let chickenScheme =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
         let printChickenOS =
                 λ(os : types.OS)
@@ -2169,8 +2011,7 @@ let chickenScheme =
                     # prelude.symlinkBinaries
                         [ "bin/csc", "bin/chicken-install", "bin/csi" ]
         
-        in    prelude.simplePackage
-                { name = "chicken-scheme", version = v }
+        in    prelude.simplePackage { name = "chicken-scheme", version = v }
             ⫽ { pkgUrl =
                   "https://code.call-cc.org/releases/${versionString}/chicken-${versionString}.tar.gz"
               , configureCommand = prelude.doNothing
@@ -2180,22 +2021,16 @@ let chickenScheme =
               }
 
 let xcb-proto =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "xcb-proto", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "xcb-proto", version = v }
         ⫽ { pkgUrl =
               "https://xorg.freedesktop.org/archive/individual/xcb/xcb-proto-${prelude.showVersion
                                                                                  v}.tar.bz2"
           }
 
 let libxcb =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "libxcb", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "libxcb", version = v }
         ⫽ { pkgUrl =
               "https://xorg.freedesktop.org/archive/individual/xcb/libxcb-${prelude.showVersion
                                                                               v}.tar.bz2"
@@ -2208,11 +2043,8 @@ let libxcb =
           }
 
 let libpthread-stubs =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "libpthread-stubs", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "libpthread-stubs", version = v }
         ⫽ { pkgUrl =
               "https://www.x.org/archive/individual/xcb/libpthread-stubs-${prelude.showVersion
                                                                              v}.tar.bz2"
@@ -2222,12 +2054,9 @@ let xorgConfigure =
       prelude.configureWithFlags [ "--disable-malloc0returnsnull" ]
 
 let mkXLib =
-        λ ( name
-          : Text
-          )
+        λ(name : Text)
       → λ(v : List Natural)
-      →   prelude.simplePackage
-            { name = name, version = v }
+      →   prelude.simplePackage { name = name, version = v }
         ⫽ { pkgUrl =
               "https://www.x.org/releases/individual/lib/${name}-${prelude.showVersion
                                                                      v}.tar.bz2"
@@ -2247,12 +2076,9 @@ let libXau =
       mkXLibDeps { name = "libXau", deps = [ prelude.unbounded "xproto" ] }
 
 let mkXUtil =
-        λ ( name
-          : Text
-          )
+        λ(name : Text)
       → λ(v : List Natural)
-      →   prelude.simplePackage
-            { name = name, version = v }
+      →   prelude.simplePackage { name = name, version = v }
         ⫽ { pkgUrl =
               "https://www.x.org/releases/individual/util/${name}-${prelude.showVersion
                                                                       v}.tar.bz2"
@@ -2352,14 +2178,10 @@ let libXScrnSaver =
           }
 
 let bzip2 =
-      let cc =
-            prelude.mkCCArg
+      let cc = prelude.mkCCArg
       
-      in    λ ( v
-              : List Natural
-              )
-          → let versionString =
-                  prelude.showVersion v
+      in    λ(v : List Natural)
+          → let versionString = prelude.showVersion v
             
             let bzipInstall =
                     λ(cfg : types.BuildVars)
@@ -2396,8 +2218,7 @@ let bzip2 =
                         )
                     ]
             
-            in    prelude.simplePackage
-                    { name = "bzip2", version = v }
+            in    prelude.simplePackage { name = "bzip2", version = v }
                 ⫽ { pkgUrl =
                       "https://www.sourceware.org/pub/bzip2/bzip2-${versionString}.tar.gz"
                   , configureCommand = prelude.doNothing
@@ -2406,11 +2227,8 @@ let bzip2 =
                   }
 
 let expat =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "expat", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "expat", version = v }
         ⫽ { pkgUrl =
               "https://github.com/libexpat/libexpat/releases/download/R_${prelude.underscoreVersion
                                                                             v}/expat-${prelude.showVersion
@@ -2443,8 +2261,7 @@ let coreutils =
           }
 
 let libsepol =
-      let cc =
-            prelude.mkCCArg
+      let cc = prelude.mkCCArg
       
       let sepolInstall =
               λ(cfg : types.BuildVars)
@@ -2471,11 +2288,8 @@ let libsepol =
                   )
               ]
       
-      in    λ ( v
-              : List Natural
-              )
-          →   prelude.simplePackage
-                { name = "libsepol", version = v }
+      in    λ(v : List Natural)
+          →   prelude.simplePackage { name = "libsepol", version = v }
             ⫽ { pkgUrl =
                   "https://github.com/SELinuxProject/selinux/releases/download/20190315/libsepol-${prelude.showVersion
                                                                                                      v}.tar.gz"
@@ -2486,8 +2300,7 @@ let libsepol =
               }
 
 let libselinux =
-      let cc =
-            prelude.mkCCArg
+      let cc = prelude.mkCCArg
       
       let selinuxInstall =
               λ(cfg : types.BuildVars)
@@ -2516,11 +2329,8 @@ let libselinux =
                   )
               ]
       
-      in    λ ( v
-              : List Natural
-              )
-          →   prelude.simplePackage
-                { name = "libselinux", version = v }
+      in    λ(v : List Natural)
+          →   prelude.simplePackage { name = "libselinux", version = v }
             ⫽ { pkgUrl =
                   "https://github.com/SELinuxProject/selinux/releases/download/20190315/libselinux-${prelude.showVersion
                                                                                                        v}.tar.gz"
@@ -2545,12 +2355,9 @@ let libXi =
         }
 
 let mkGnomeNinja =
-        λ ( name
-          : Text
-          )
+        λ(name : Text)
       → λ(x : { version : List Natural, patch : Natural })
-      → let versionString =
-              prelude.showVersion x.version
+      → let versionString = prelude.showVersion x.version
         
         let fullVersion = versionString ++ "." ++ Natural/show x.patch
         
@@ -2610,47 +2417,34 @@ let libdrm =
 let libpciaccess = mkXLib "libpciaccess"
 
 let markupSafe =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.python3Package
-            { name = "MarkupSafe", version = v }
+        λ(v : List Natural)
+      →   prelude.python3Package { name = "MarkupSafe", version = v }
         ⫽ { pkgUrl =
               "https://files.pythonhosted.org/packages/source/M/MarkupSafe/MarkupSafe-${prelude.showVersion
                                                                                           v}.tar.gz"
           }
 
 let mako =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.python3Package
-            { name = "Mako", version = v }
+        λ(v : List Natural)
+      →   prelude.python3Package { name = "Mako", version = v }
         ⫽ { pkgUrl =
               "https://files.pythonhosted.org/packages/source/M/Mako/Mako-${prelude.showVersion
                                                                               v}.tar.gz"
           }
 
 let elfutils =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "elfutils", version = v }
+        in    prelude.simplePackage { name = "elfutils", version = v }
             ⫽ { pkgUrl =
                   "https://sourceware.org/ftp/elfutils/${versionString}/elfutils-${versionString}.tar.bz2"
               }
 
 let mkGnomeSimple =
-        λ ( name
-          : Text
-          )
+        λ(name : Text)
       → λ(x : { version : List Natural, patch : Natural })
-      → let versionString =
-              prelude.showVersion x.version
+      → let versionString = prelude.showVersion x.version
         
         let fullVersion = versionString ++ "." ++ Natural/show x.patch
         
@@ -2709,11 +2503,8 @@ let gtk3 =
               }
 
 let graphviz =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "graphviz", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "graphviz", version = v }
         ⫽ { pkgUrl =
               "https://graphviz.gitlab.io/pub/graphviz/stable/SOURCES/graphviz.tar.gz"
           , configureCommand = prelude.configureMkExes [ "iffe" ]
@@ -2722,11 +2513,8 @@ let graphviz =
           }
 
 let wayland =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "wayland", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "wayland", version = v }
         ⫽ { pkgUrl =
               "https://wayland.freedesktop.org/releases/wayland-${prelude.showVersion
                                                                     v}.tar.xz"
@@ -2747,8 +2535,7 @@ let swig =
           }
 
 let lmdb =
-      let cc =
-            prelude.mkCCArg
+      let cc = prelude.mkCCArg
       
       let ar =
               λ(cfg : types.BuildVars)
@@ -2778,14 +2565,10 @@ let lmdb =
                   )
               ]
       
-      in    λ ( v
-              : List Natural
-              )
-          → let versionString =
-                  prelude.showVersion v
+      in    λ(v : List Natural)
+          → let versionString = prelude.showVersion v
             
-            in    prelude.simplePackage
-                    { name = "lmdb", version = v }
+            in    prelude.simplePackage { name = "lmdb", version = v }
                 ⫽ { pkgUrl =
                       "https://github.com/LMDB/lmdb/archive/LMDB_${versionString}.tar.gz"
                   , pkgSubdir = "lmdb-LMDB_${versionString}"
@@ -2803,14 +2586,10 @@ let gsl =
           }
 
 let postgresql =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "postgresql", version = v }
+        in    prelude.simplePackage { name = "postgresql", version = v }
             ⫽ { pkgUrl =
                   "https://ftp.postgresql.org/pub/source/v${versionString}/postgresql-${versionString}.tar.bz2"
               , configureCommand =
@@ -2820,14 +2599,10 @@ let postgresql =
               }
 
 let sqlite =
-        λ ( x
-          : { year : Natural, version : List Natural }
-          )
-      → let versionString =
-              prelude.squishVersion x.version
+        λ(x : { year : Natural, version : List Natural })
+      → let versionString = prelude.squishVersion x.version
         
-        in    prelude.simplePackage
-                { name = "sqlite", version = x.version }
+        in    prelude.simplePackage { name = "sqlite", version = x.version }
             ⫽ { pkgUrl =
                   "https://sqlite.org/${Natural/show
                                           x.year}/sqlite-autoconf-${versionString}000.tar.gz"
@@ -2849,11 +2624,8 @@ let nano =
         ⫽ { pkgDeps = [ prelude.unbounded "ncurses" ] }
 
 let libarchive =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "libarchive", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "libarchive", version = v }
         ⫽ { pkgUrl =
               "https://www.libarchive.org/downloads/libarchive-${prelude.showVersion
                                                                    v}.tar.gz"
@@ -2872,17 +2644,12 @@ let pygobject =
           }
 
 let pygtk =
-        λ ( x
-          : { version : List Natural, patch : Natural }
-          )
-      → let versionString =
-              prelude.showVersion x.version
+        λ(x : { version : List Natural, patch : Natural })
+      → let versionString = prelude.showVersion x.version
         
         let fullVersion = versionString ++ "." ++ Natural/show x.patch
         
-        in    mkGnomeSimple
-                "pygtk"
-                x
+        in    mkGnomeSimple "pygtk" x
             ⫽ { pkgUrl =
                   "http://ftp.gnome.org/pub/gnome/sources/pygtk/${versionString}/pygtk-${fullVersion}.tar.bz2"
               , configureCommand =
@@ -2897,11 +2664,8 @@ let pygtk =
               }
 
 let libglade =
-        λ ( x
-          : { version : List Natural, patch : Natural }
-          )
-      → let versionString =
-              prelude.showVersion x.version
+        λ(x : { version : List Natural, patch : Natural })
+      → let versionString = prelude.showVersion x.version
         
         let fullVersion = versionString ++ "." ++ Natural/show x.patch
         
@@ -2918,14 +2682,10 @@ let libglade =
               }
 
 let scour =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.python3Package
-                { name = "scour", version = v }
+        in    prelude.python3Package { name = "scour", version = v }
             ⫽ { pkgUrl =
                   "https://github.com/scour-project/scour/archive/v${versionString}/scour-${versionString}.tar.gz"
               , installCommand = prelude.installWithPy3Wrappers [ "scour" ]
@@ -2989,11 +2749,8 @@ let libXmu =
         }
 
 let libotf =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "libotf", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "libotf", version = v }
         ⫽ { pkgUrl =
               "http://download.savannah.gnu.org/releases/m17n/libotf-${prelude.showVersion
                                                                          v}.tar.gz"
@@ -3001,11 +2758,8 @@ let libotf =
           }
 
 let m17n =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "m17n-lib", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "m17n-lib", version = v }
         ⫽ { pkgUrl =
               "http://download.savannah.gnu.org/releases/m17n/m17n-lib-${prelude.showVersion
                                                                            v}.tar.gz"
@@ -3020,12 +2774,9 @@ let m17n =
           }
 
 let mkGimpPackage =
-        λ ( name
-          : Text
-          )
+        λ(name : Text)
       → λ(x : { version : List Natural, patch : Natural })
-      → let versionString =
-              prelude.showVersion x.version
+      → let versionString = prelude.showVersion x.version
         
         let fullVersion = versionString ++ "." ++ Natural/show x.patch
         
@@ -3036,11 +2787,8 @@ let mkGimpPackage =
               }
 
 let babl =
-        λ ( x
-          : { version : List Natural, patch : Natural }
-          )
-      → let versionString =
-              prelude.showVersion x.version
+        λ(x : { version : List Natural, patch : Natural })
+      → let versionString = prelude.showVersion x.version
         
         let fullVersion = versionString ++ "." ++ Natural/show x.patch
         
@@ -3071,14 +2819,10 @@ let gegl =
           }
 
 let libexif =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "libexif", version = v }
+        in    prelude.simplePackage { name = "libexif", version = v }
             ⫽ { pkgUrl =
                   "https://nchc.dl.sourceforge.net/project/libexif/libexif/${versionString}/libexif-${versionString}.tar.bz2"
               }
@@ -3098,28 +2842,20 @@ let json-glib =
           }
 
 let lcms2 =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "lcms2", version = v }
+        in    prelude.simplePackage { name = "lcms2", version = v }
             ⫽ { pkgUrl =
                   "https://github.com/mm2/Little-CMS/archive/lcms${versionString}.tar.gz"
               , pkgSubdir = "Little-CMS-lcms${versionString}"
               }
 
 let libmypaint =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "libmypaint", version = v }
+        in    prelude.simplePackage { name = "libmypaint", version = v }
             ⫽ { pkgUrl =
                   "https://github.com/mypaint/libmypaint/releases/download/v${versionString}/libmypaint-${versionString}.tar.xz"
               , pkgDeps = [ prelude.unbounded "json-c" ]
@@ -3128,28 +2864,20 @@ let libmypaint =
               }
 
 let json-c =
-        λ ( x
-          : { version : List Natural, dateStr : Text }
-          )
-      → let versionString =
-              "${prelude.showVersion x.version}-${x.dateStr}"
+        λ(x : { version : List Natural, dateStr : Text })
+      → let versionString = "${prelude.showVersion x.version}-${x.dateStr}"
         
-        in    prelude.simplePackage
-                { name = "json-c", version = x.version }
+        in    prelude.simplePackage { name = "json-c", version = x.version }
             ⫽ { pkgUrl =
                   "https://github.com/json-c/json-c/archive/json-c-${versionString}.tar.gz"
               , pkgSubdir = "json-c-json-c-${versionString}"
               }
 
 let libopenjpeg =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "libopenjpeg", version = v }
+        in    prelude.simplePackage { name = "libopenjpeg", version = v }
             ⫽ prelude.cmakePackage
             ⫽ { pkgUrl =
                   "https://github.com/uclouvain/openjpeg/archive/v${versionString}.tar.gz"
@@ -3167,14 +2895,10 @@ let libopenjpeg =
               }
 
 let libevent =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "libevent", version = v }
+        in    prelude.simplePackage { name = "libevent", version = v }
             ⫽ { pkgUrl =
                   "https://github.com/libevent/libevent/releases/download/release-${versionString}-stable/libevent-${versionString}-stable.tar.gz"
               , pkgSubdir = "libevent-${versionString}-stable"
@@ -3191,14 +2915,10 @@ let memcached =
           }
 
 let motif =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "motif", version = v }
+        in    prelude.simplePackage { name = "motif", version = v }
             ⫽ { pkgUrl =
                   "https://iweb.dl.sourceforge.net/project/motif/Motif%20${versionString}%20Source%20Code/motif-${versionString}.tar.gz"
               , pkgDeps =
@@ -3219,16 +2939,13 @@ let libjpeg =
               }
 
 let feh =
-      let cc =
-            prelude.mkCCArg
+      let cc = prelude.mkCCArg
       
       let fehMake =
             λ(cfg : types.BuildVars) → { program = prelude.makeExe cfg.buildOS }
       
       let fehBuild =
-              λ ( v
-                : List Natural
-                )
+              λ(v : List Natural)
             → λ(cfg : types.BuildVars)
             → [ prelude.call
                   (   prelude.defaultCall
@@ -3239,10 +2956,8 @@ let feh =
                   (   prelude.defaultCall
                     ⫽ fehMake cfg
                     ⫽ { arguments =
-                            cc
-                              cfg
-                          # [ "CFLAGS=${( prelude.mkCFlags
-                                            cfg
+                            cc cfg
+                          # [ "CFLAGS=${( prelude.mkCFlags cfg
                                         ).value} -DPACKAGE=\\\"feh\\\" -DPREFIX=\\\"${cfg.installDir}\\\" -DVERSION=\\\"${prelude.showVersion
                                                                                                                             v}\\\" ${( prelude.mkLDFlags
                                                                                                                                          cfg.linkDirs
@@ -3295,11 +3010,8 @@ let feh =
               }
 
 let imlib2 =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "imlib2", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "imlib2", version = v }
         ⫽ { pkgUrl =
               "https://downloads.sourceforge.net/enlightenment/imlib2-${prelude.showVersion
                                                                           v}.tar.bz2"
@@ -3313,14 +3025,10 @@ let imlib2 =
           }
 
 let jemalloc =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "jemalloc", version = v }
+        in    prelude.simplePackage { name = "jemalloc", version = v }
             ⫽ { pkgUrl =
                   "https://github.com/jemalloc/jemalloc/releases/download/${versionString}/jemalloc-${versionString}.tar.bz2"
               , configureCommand =
@@ -3335,14 +3043,10 @@ let jemalloc =
               }
 
 let gperftools =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "gperftools", version = v }
+        in    prelude.simplePackage { name = "gperftools", version = v }
             ⫽ { pkgUrl =
                   "https://github.com/gperftools/gperftools/releases/download/gperftools-${versionString}/gperftools-${versionString}.tar.gz"
               }
@@ -3369,11 +3073,8 @@ let openssh =
                   )
               ]
       
-      in    λ ( v
-              : List Natural
-              )
-          →   prelude.simplePackage
-                { name = "openssh", version = v }
+      in    λ(v : List Natural)
+          →   prelude.simplePackage { name = "openssh", version = v }
             ⫽ { pkgUrl =
                   "https://mirrors.gigenet.com/pub/OpenBSD/OpenSSH/portable/openssh-${prelude.showVersion
                                                                                         v}p1.tar.gz"
@@ -3392,14 +3093,10 @@ let libxslt =
           }
 
 let libepoxy =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.ninjaPackage
-                { name = "libepoxy", version = v }
+        in    prelude.ninjaPackage { name = "libepoxy", version = v }
             ⫽ { pkgUrl =
                   "https://github.com/anholt/libepoxy/releases/download/${versionString}/libepoxy-${versionString}.tar.xz"
               , pkgDeps = [ prelude.unbounded "mesa" ]
@@ -3499,14 +3196,10 @@ let gexiv2 =
           }
 
 let exiv2 =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "exiv2", version = v }
+        in    prelude.simplePackage { name = "exiv2", version = v }
             ⫽ prelude.cmakePackage
             ⫽ { pkgUrl =
                   "http://www.exiv2.org/builds/exiv2-${versionString}-Source.tar.gz"
@@ -3514,14 +3207,10 @@ let exiv2 =
               }
 
 let libtiff =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.ninjaPackage
-                { name = "libtiff", version = v }
+        in    prelude.ninjaPackage { name = "libtiff", version = v }
             ⫽ { pkgUrl =
                   "https://download.osgeo.org/libtiff/tiff-${versionString}.tar.gz"
               , pkgSubdir = "tiff-${versionString}"
@@ -3531,11 +3220,8 @@ let libtiff =
               }
 
 let nspr =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
         let bitFlag =
                 λ(cfg : types.BuildVars)
@@ -3545,8 +3231,7 @@ let nspr =
                 
                 else  [] : List Text
         
-        in    prelude.simplePackage
-                { name = "nspr", version = v }
+        in    prelude.simplePackage { name = "nspr", version = v }
             ⫽ { pkgUrl =
                   "https://archive.mozilla.org/pub/nspr/releases/v${versionString}/src/nspr-${versionString}.tar.gz"
               , pkgSubdir = "nspr-${versionString}/nspr"
@@ -3556,11 +3241,8 @@ let nspr =
               }
 
 let libthai =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "libthai", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "libthai", version = v }
         ⫽ { pkgUrl =
               "https://linux.thai.net/pub/thailinux/software/libthai/libthai-${prelude.showVersion
                                                                                  v}.tar.xz"
@@ -3568,22 +3250,16 @@ let libthai =
           }
 
 let libdatrie =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "libdatrie", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "libdatrie", version = v }
         ⫽ { pkgUrl =
               "https://linux.thai.net/pub/thailinux/software/libthai/libdatrie-${prelude.showVersion
                                                                                    v}.tar.xz"
           }
 
 let joe =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "joe", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "joe", version = v }
         ⫽ { pkgUrl =
               "https://downloads.sourceforge.net/joe-editor/joe-${prelude.showVersion
                                                                     v}.tar.gz"
@@ -3612,9 +3288,7 @@ let libcroco =
           }
 
 let libsoup =
-        λ ( x
-          : { version : List Natural, patch : Natural }
-          )
+        λ(x : { version : List Natural, patch : Natural })
       → let libsoupCfgFile =
               ''
               option('gssapi',
@@ -3695,14 +3369,10 @@ let libsoup =
               }
 
 let libpsl =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "libpsl", version = v }
+        in    prelude.simplePackage { name = "libpsl", version = v }
             ⫽ { pkgUrl =
                   "https://github.com/rockdaboot/libpsl/releases/download/libpsl-${versionString}/libpsl-${versionString}.tar.gz"
               , configureCommand =
@@ -3710,14 +3380,10 @@ let libpsl =
               }
 
 let krb5 =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "krb5", version = v }
+        in    prelude.simplePackage { name = "krb5", version = v }
             ⫽ { pkgUrl =
                   "https://kerberos.org/dist/krb5/${versionString}/krb5-${versionString}.tar.gz"
               , pkgSubdir = "krb5-${versionString}/src"
@@ -3740,14 +3406,10 @@ let vala =
           }
 
 let htop =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "htop", version = v }
+        in    prelude.simplePackage { name = "htop", version = v }
             ⫽ { pkgUrl =
                   "https://hisham.hm/htop/releases/${versionString}/htop-${versionString}.tar.gz"
               , pkgDeps = [ prelude.unbounded "ncurses" ]
@@ -3766,11 +3428,8 @@ let mpfr =
           }
 
 let libsodium =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "libsodium", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "libsodium", version = v }
         ⫽ { pkgUrl =
               "https://download.libsodium.org/libsodium/releases/libsodium-${prelude.showVersion
                                                                                v}.tar.gz"
@@ -3785,11 +3444,8 @@ let libev =
           }
 
 let ctags =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "ctags", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "ctags", version = v }
         ⫽ { pkgUrl =
               "http://prdownloads.sourceforge.net/ctags/ctags-${prelude.showVersion
                                                                   v}.tar.gz"
@@ -3798,11 +3454,8 @@ let ctags =
           }
 
 let tcc =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "tcc", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "tcc", version = v }
         ⫽ { pkgUrl =
               "http://download.savannah.gnu.org/releases/tinycc/tcc-${prelude.showVersion
                                                                         v}.tar.bz2"
@@ -3821,35 +3474,24 @@ let texinfo =
           }
 
 let node =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "node", version = v }
+        in    prelude.simplePackage { name = "node", version = v }
             ⫽ { pkgUrl =
                   "https://nodejs.org/dist/v${versionString}/node-v${versionString}.tar.gz"
               , pkgSubdir = "node-v${versionString}"
               , installCommand =
-                    λ ( cfg
-                      : types.BuildVars
-                      )
-                  →   prelude.installWithBinaries
-                        [ "bin/node", "bin/npm" ]
-                        cfg
+                    λ(cfg : types.BuildVars)
+                  →   prelude.installWithBinaries [ "bin/node", "bin/npm" ] cfg
                     # [ prelude.mkExe
                           "${cfg.installDir}/lib/node_modules/npm/bin/npm-cli.js"
                       ]
               }
 
 let glu =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "glu", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "glu", version = v }
         ⫽ { pkgUrl =
               "https://mesa.freedesktop.org/archive/glu/glu-${prelude.showVersion
                                                                 v}.tar.gz"
@@ -3882,28 +3524,20 @@ let mosh =
           }
 
 let protobuf =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "protobuf", version = v }
+        in    prelude.simplePackage { name = "protobuf", version = v }
             ⫽ { pkgUrl =
                   "https://github.com/protocolbuffers/protobuf/releases/download/v${versionString}/protobuf-cpp-${versionString}.tar.gz"
               , pkgSubdir = "protobuf-${versionString}"
               }
 
 let libcds =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "libcds", version = v }
+        in    prelude.simplePackage { name = "libcds", version = v }
             ⫽ prelude.cmakePackage
             ⫽ { pkgUrl =
                   "https://pilotfiber.dl.sourceforge.net/project/libcds/cds-${versionString}/cds-${versionString}.tar.gz"
@@ -3932,14 +3566,10 @@ let libboost =
                   )
               ]
       
-      in    λ ( v
-              : List Natural
-              )
-          → let versionString =
-                  prelude.underscoreVersion v
+      in    λ(v : List Natural)
+          → let versionString = prelude.underscoreVersion v
             
-            in    prelude.simplePackage
-                    { name = "libboost", version = v }
+            in    prelude.simplePackage { name = "libboost", version = v }
                 ⫽ { pkgUrl =
                       "https://dl.bintray.com/boostorg/release/${prelude.showVersion
                                                                    v}/source/boost_${versionString}.tar.bz2"
@@ -3962,14 +3592,10 @@ let slowBuild =
         ]
 
 let clang =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "clang", version = v }
+        in    prelude.simplePackage { name = "clang", version = v }
             ⫽ prelude.cmakePackage
             ⫽ { pkgUrl =
                   "http://releases.llvm.org/${versionString}/cfe-${versionString}.src.tar.xz"
@@ -3986,14 +3612,10 @@ let clang =
               }
 
 let llvm =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "llvm", version = v }
+        in    prelude.simplePackage { name = "llvm", version = v }
             ⫽ prelude.cmakePackage
             ⫽ { pkgUrl =
                   "http://releases.llvm.org/${versionString}/llvm-${versionString}.src.tar.xz"
@@ -4003,11 +3625,8 @@ let llvm =
               }
 
 let pari =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "pari", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "pari", version = v }
         ⫽ { pkgUrl =
               "http://pari.math.u-bordeaux.fr/pub/pari/unix/pari-${prelude.showVersion
                                                                      v}.tar.gz"
@@ -4044,14 +3663,10 @@ let mpc =
           }
 
 let gcc =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "gcc", version = v }
+        in    prelude.simplePackage { name = "gcc", version = v }
             ⫽ { pkgUrl =
                   "https://ftp.wayne.edu/gnu/gcc/gcc-${versionString}/gcc-${versionString}.tar.xz"
               , configureCommand =
@@ -4082,11 +3697,8 @@ let gcc =
               }
 
 let ruby =
-        λ ( x
-          : { version : List Natural, patch : Natural }
-          )
-      → let versionString =
-              prelude.showVersion x.version
+        λ(x : { version : List Natural, patch : Natural })
+      → let versionString = prelude.showVersion x.version
         
         let fullVersion = versionString ++ "." ++ Natural/show x.patch
         
@@ -4141,11 +3753,8 @@ let poppler =
           }
 
 let tesseract =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "tesseract", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "tesseract", version = v }
         ⫽ { pkgUrl =
               "https://github.com/tesseract-ocr/tesseract/archive/${prelude.showVersion
                                                                       v}.tar.gz"
@@ -4267,11 +3876,8 @@ let ffmpeg =
           }
 
 let libsndfile =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "libsndfile", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "libsndfile", version = v }
         ⫽ { pkgUrl =
               "http://www.mega-nerd.com/libsndfile/files/libsndfile-${prelude.showVersion
                                                                         v}.tar.gz"
@@ -4350,11 +3956,8 @@ let mercury =
           ⫽ { pkgBuildDeps = [ prelude.unbounded "flex" ], pkgStream = False }
 
 let qt =
-        λ ( x
-          : { version : List Natural, patch : Natural }
-          )
-      → let versionString =
-              prelude.showVersion x.version
+        λ(x : { version : List Natural, patch : Natural })
+      → let versionString = prelude.showVersion x.version
         
         let fullVersion = versionString ++ "." ++ Natural/show x.patch
         
@@ -4418,11 +4021,8 @@ let fftw =
           }
 
 let icu-le-hb =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "icu-le-hb", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "icu-le-hb", version = v }
         ⫽ { pkgUrl =
               "https://github.com/harfbuzz/icu-le-hb/archive/${prelude.showVersion
                                                                  v}.tar.gz"
@@ -4432,11 +4032,8 @@ let icu-le-hb =
           }
 
 let icu =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "icu", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "icu", version = v }
         ⫽ { pkgUrl =
               "http://download.icu-project.org/files/icu4c/${prelude.showVersion
                                                                v}/icu4c-${prelude.underscoreVersion
@@ -4479,11 +4076,8 @@ let libraw =
           }
 
 let quazip =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "quazip", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "quazip", version = v }
         ⫽ prelude.cmakePackage
         ⫽ { pkgUrl =
               "https://github.com/stachenov/quazip/archive/v${prelude.showVersion
@@ -4515,14 +4109,10 @@ let blas =
           }
 
 let openblas =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "openblas", version = v }
+        in    prelude.simplePackage { name = "openblas", version = v }
             ⫽ { pkgUrl =
                   "https://github.com/xianyi/OpenBLAS/archive/v${versionString}.tar.gz"
               , pkgSubdir = "OpenBLAS-${versionString}"
@@ -4533,14 +4123,10 @@ let openblas =
               }
 
 let r =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "r", version = v }
+        in    prelude.simplePackage { name = "r", version = v }
             ⫽ { pkgUrl =
                   "https://cran.r-project.org/src/base/R-3/R-${versionString}.tar.gz"
               , pkgSubdir = "R-${versionString}"
@@ -4556,11 +4142,8 @@ let r =
               }
 
 let libspng =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.ninjaPackage
-            { name = "libspng", version = v }
+        λ(v : List Natural)
+      →   prelude.ninjaPackage { name = "libspng", version = v }
         ⫽ { pkgUrl =
               "https://github.com/randy408/libspng/archive/v${prelude.showVersion
                                                                 v}.tar.gz"
@@ -4573,11 +4156,8 @@ let libspng =
           }
 
 let glib-networking =
-        λ ( x
-          : { version : List Natural, patch : Natural }
-          )
-      → let versionString =
-              prelude.showVersion x.version
+        λ(x : { version : List Natural, patch : Natural })
+      → let versionString = prelude.showVersion x.version
         
         let fullVersion = versionString ++ "." ++ Natural/show x.patch
         
@@ -4594,25 +4174,18 @@ let glib-networking =
               }
 
 let libwebp =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "libwebp", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "libwebp", version = v }
         ⫽ { pkgUrl =
               "https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-${prelude.showVersion
                                                                                                   v}.tar.gz"
           }
 
 let rustc =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "rustc", version = v }
+        in    prelude.simplePackage { name = "rustc", version = v }
             ⫽ { pkgUrl =
                   "https://static.rust-lang.org/dist/rust-${versionString}-x86_64-unknown-linux-gnu.tar.gz"
               , pkgSubdir = "rust-${versionString}-x86_64-unknown-linux-gnu"
@@ -4652,26 +4225,19 @@ let librsvg =
           }
 
 let ats =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
         let atsBuild =
-                λ ( cfg
-                  : types.BuildVars
-                  )
+                λ(cfg : types.BuildVars)
               → let buildDir =
                       cfg.currentDir ++ "/ATS2-Postiats-gmp-${versionString}"
                 
                 in  [ prelude.call
                         (   prelude.defaultCall
-                          ⫽ { program =
-                                prelude.makeExe cfg.buildOS
+                          ⫽ { program = prelude.makeExe cfg.buildOS
                             , arguments =
-                                [ "CFLAGS=${( prelude.mkCFlags
-                                                cfg
+                                [ "CFLAGS=${( prelude.mkCFlags cfg
                                             ).value} -I${buildDir}/src/CBOOT/ccomp/runtime -I${buildDir}/src/CBOOT"
                                 , "LDFLAGS='${( prelude.mkLDFlags cfg.linkDirs
                                               ).value}'"
@@ -4681,8 +4247,7 @@ let ats =
                         )
                     ]
         
-        in    prelude.simplePackage
-                { name = "ats", version = v }
+        in    prelude.simplePackage { name = "ats", version = v }
             ⫽ { pkgUrl =
                   "http://ats-lang.sourceforge.net/IMPLEMENT/Postiats/ATS2-Postiats-${versionString}.tgz"
               , pkgSubdir = "ATS2-Postiats-gmp-${versionString}"
@@ -4714,11 +4279,8 @@ let libav =
           }
 
 let alsa-lib =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "alsa-lib", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "alsa-lib", version = v }
         ⫽ { pkgUrl =
               "https://www.alsa-project.org/files/pub/lib/alsa-lib-${prelude.showVersion
                                                                        v}.tar.bz2"
@@ -4726,14 +4288,10 @@ let alsa-lib =
           }
 
 let bash-completion =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "bash-completion", version = v }
+        in    prelude.simplePackage { name = "bash-completion", version = v }
             ⫽ { pkgUrl =
                   "https://github.com/scop/bash-completion/releases/download/${versionString}/bash-completion-${versionString}.tar.xz"
               }
@@ -4747,8 +4305,7 @@ let hugs =
                 , { var = "PATH", value = prelude.mkPathVar cfg.binDirs }
                 ]
       
-      in    prelude.simplePackage
-              { name = "hugs", version = [ 2006, 9 ] }
+      in    prelude.simplePackage { name = "hugs", version = [ 2006, 9 ] }
           ⫽ { pkgUrl =
                 "https://www.haskell.org/hugs/downloads/2006-09/hugs98-plus-Sep2006.tar.gz"
             , pkgSubdir = "hugs98-plus-Sep2006"
@@ -4778,11 +4335,8 @@ let bash =
           }
 
 let findutils =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "findutils", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "findutils", version = v }
         ⫽ { pkgUrl =
               "https://ftp.gnu.org/pub/gnu/findutils/findutils-${prelude.showVersion
                                                                    v}.tar.xz"
@@ -4790,14 +4344,10 @@ let findutils =
           }
 
 let ghc =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "ghc", version = v }
+        in    prelude.simplePackage { name = "ghc", version = v }
             ⫽ { pkgUrl =
                   "https://downloads.haskell.org/~ghc/${versionString}/ghc-${versionString}-x86_64-deb9-linux.tar.xz"
               , buildCommand = prelude.doNothing
@@ -4814,11 +4364,8 @@ let cmark =
           }
 
 let lzip =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "lzip", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "lzip", version = v }
         ⫽ { pkgUrl =
               "http://gnu.mirrors.pair.com/savannah/savannah/lzip/lzip-${prelude.showVersion
                                                                            v}.tar.lz"
@@ -4826,11 +4373,8 @@ let lzip =
           }
 
 let lunzip =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "lunzip", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "lunzip", version = v }
         ⫽ { pkgUrl =
               "http://download.savannah.gnu.org/releases/lzip/lunzip/lunzip-${prelude.showVersion
                                                                                 v}.tar.lz"
@@ -4838,11 +4382,8 @@ let lunzip =
           }
 
 let lzlib =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "lzlib", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "lzlib", version = v }
         ⫽ { pkgUrl =
               "http://download.savannah.gnu.org/releases/lzip/lzlib/lzlib-${prelude.showVersion
                                                                               v}.tar.lz"
@@ -4850,11 +4391,8 @@ let lzlib =
           }
 
 let lziprecover =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "lziprecover", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "lziprecover", version = v }
         ⫽ { pkgUrl =
               "http://download.savannah.gnu.org/releases/lzip/lziprecover/lziprecover-${prelude.showVersion
                                                                                           v}.tar.lz"
@@ -4862,28 +4400,20 @@ let lziprecover =
           }
 
 let libmp3lame =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "libmp3lame", version = v }
+        in    prelude.simplePackage { name = "libmp3lame", version = v }
             ⫽ { pkgUrl =
                   "https://downloads.sourceforge.net/lame/lame-${versionString}.tar.gz"
               , pkgSubdir = "lame-${versionString}"
               }
 
 let libass =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "libass", version = v }
+        in    prelude.simplePackage { name = "libass", version = v }
             ⫽ { pkgUrl =
                   "https://github.com/libass/libass/releases/download/${versionString}/libass-${versionString}.tar.xz"
               , pkgBuildDeps = [ prelude.unbounded "nasm" ]
@@ -4900,22 +4430,16 @@ let libass =
               }
 
 let libogg =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "libogg", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "libogg", version = v }
         ⫽ { pkgUrl =
               "https://downloads.xiph.org/releases/ogg/libogg-${prelude.showVersion
                                                                   v}.tar.xz"
           }
 
 let libvorbis =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "libvorbis", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "libvorbis", version = v }
         ⫽ { pkgUrl =
               "https://downloads.xiph.org/releases/vorbis/libvorbis-${prelude.showVersion
                                                                         v}.tar.xz"
@@ -4923,14 +4447,10 @@ let libvorbis =
           }
 
 let libvpx =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "libvpx", version = v }
+        in    prelude.simplePackage { name = "libvpx", version = v }
             ⫽ { pkgUrl =
                   "https://github.com/webmproject/libvpx/archive/v${versionString}/libvpx-${versionString}.tar.gz"
               , pkgBuildDeps =
@@ -4939,25 +4459,18 @@ let libvpx =
               }
 
 let fdk-aac =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "fdk-aac", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "fdk-aac", version = v }
         ⫽ { pkgUrl =
               "https://downloads.sourceforge.net/opencore-amr/fdk-aac-${prelude.showVersion
                                                                           v}.tar.gz"
           }
 
 let swi-prolog =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.ninjaPackage
-                { name = "swi-prolog", version = v }
+        in    prelude.ninjaPackage { name = "swi-prolog", version = v }
             ⫽ { pkgUrl =
                   "https://www.swi-prolog.org/download/stable/src/swipl-${versionString}.tar.gz"
               , configureCommand = prelude.cmakeConfigureNinja
@@ -4971,22 +4484,16 @@ let swi-prolog =
               }
 
 let exiftool =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "exiftool", version = v }
+        in    prelude.simplePackage { name = "exiftool", version = v }
             ⫽ { pkgUrl =
                   "https://sno.phy.queensu.ca/~phil/exiftool/Image-ExifTool-${versionString}.tar.gz"
               , pkgSubdir = "Image-ExifTool-${versionString}"
               , configureCommand = prelude.perlConfigure
               , installCommand =
-                    λ ( cfg
-                      : types.BuildVars
-                      )
+                    λ(cfg : types.BuildVars)
                   → let perlWrapper =
                           "PERL5LIB=${cfg.installDir}/lib/site_perl/5.30.0/ ${cfg.installDir}/bin/exiftool \$@"
                     
@@ -5004,11 +4511,8 @@ let exiftool =
               }
 
 let subversion =
-        λ ( v
-          : List Natural
-          )
-      →   prelude.simplePackage
-            { name = "subversion", version = v }
+        λ(v : List Natural)
+      →   prelude.simplePackage { name = "subversion", version = v }
         ⫽ { pkgUrl =
               "https://www-eu.apache.org/dist/subversion/subversion-${prelude.showVersion
                                                                         v}.tar.bz2"
@@ -5025,14 +4529,10 @@ let subversion =
           }
 
 let utf8proc =
-        λ ( v
-          : List Natural
-          )
-      → let versionString =
-              prelude.showVersion v
+        λ(v : List Natural)
+      → let versionString = prelude.showVersion v
         
-        in    prelude.simplePackage
-                { name = "utf8proc", version = v }
+        in    prelude.simplePackage { name = "utf8proc", version = v }
             ⫽ prelude.cmakePackage
             ⫽ { pkgUrl =
                   "https://github.com/JuliaStrings/utf8proc/archive/v${versionString}.tar.gz"
